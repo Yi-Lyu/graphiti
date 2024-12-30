@@ -7,6 +7,13 @@ from graph_service.config import get_settings
 from graph_service.routers import ingest, retrieve
 from graph_service.zep_graphiti import initialize_graphiti
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):

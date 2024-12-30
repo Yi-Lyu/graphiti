@@ -11,6 +11,13 @@ class Settings(BaseSettings):
     openai_base_url: str | None = Field(None)
     model_name: str | None = Field(None)
     embedding_model_name: str | None = Field(None)
+
+    openai_compatibility_api_key: str
+    openai_compatibility_base_url: str | None = Field(None)
+    openai_compatibility_model_name: str | None = Field(None)
+    openai_compatibility_max_tokens: int = Field(8192)
+    openai_compatibility_temperature: float = Field(0.5)
+
     neo4j_uri: str
     neo4j_user: str
     neo4j_password: str

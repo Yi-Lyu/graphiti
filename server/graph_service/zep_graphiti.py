@@ -5,13 +5,14 @@ from fastapi import Depends, HTTPException
 from graphiti_core import Graphiti  # type: ignore
 from graphiti_core.edges import EntityEdge  # type: ignore
 from graphiti_core.errors import EdgeNotFoundError, GroupsEdgesNotFoundError, NodeNotFoundError
-from graphiti_core.llm_client import LLMClient  # type: ignore
+from graphiti_core.llm_client import LLMClient, OpenAIClient, LLMConfig, OpenAICompatibleClient  # type: ignore
 from graphiti_core.nodes import EntityNode, EpisodicNode  # type: ignore
 
 from graph_service.config import ZepEnvDep
 from graph_service.dto import FactResult
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class ZepGraphiti(Graphiti):
@@ -72,11 +73,29 @@ class ZepGraphiti(Graphiti):
 
 
 async def get_graphiti(settings: ZepEnvDep):
+    """
     client = ZepGraphiti(
         uri=settings.neo4j_uri,
         user=settings.neo4j_user,
         password=settings.neo4j_password,
     )
+    """
+    client = ZepGraphiti(
+        uri=settings.neo4j_uri,
+        user=settings.neo4j_user,
+        password=settings.neo4j_password,
+        llm_client=OpenAICompatibleClient(
+            config=LLMConfig(
+                api_key=settings.openai_compatibility_api_key,
+                base_url=settings.openai_compatibility_base_url,
+                model=settings.openai_compatibility_model_name,
+                max_tokens=settings.openai_compatibility_max_tokens,
+                temperature=settings.openai_compatibility_temperature,
+            )
+        ),
+    )
+
+
     if settings.openai_base_url is not None:
         client.llm_client.config.base_url = settings.openai_base_url
     if settings.openai_api_key is not None:
@@ -91,11 +110,29 @@ async def get_graphiti(settings: ZepEnvDep):
 
 
 async def initialize_graphiti(settings: ZepEnvDep):
+    """
     client = ZepGraphiti(
         uri=settings.neo4j_uri,
         user=settings.neo4j_user,
         password=settings.neo4j_password,
     )
+    """
+    client = ZepGraphiti(
+        uri=settings.neo4j_uri,
+        user=settings.neo4j_user,
+        password=settings.neo4j_password,
+        llm_client=OpenAICompatibleClient(
+            config=LLMConfig(
+                api_key=settings.openai_compatibility_api_key,
+                base_url=settings.openai_compatibility_base_url,
+                model=settings.openai_compatibility_model_name,
+                max_tokens=settings.openai_compatibility_max_tokens,
+                temperature=settings.openai_compatibility_temperature,
+            )
+        ),
+    )
+
+
     await client.build_indices_and_constraints()
 
 
